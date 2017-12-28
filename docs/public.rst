@@ -1,21 +1,18 @@
 Public API
-==========
+----------
 
-When *public* API calls are the only calls required for a particular use case,
-the **api_key**, **api_secret** and **client_id** parameters need not be set
-while initializing the :class:`quadriga.QuadrigaClient`:
+If you need access to public API only, parameters **api_key**, **api_secret**
+and **client_id** are optional when initializing :class:`quadriga.QuadrigaClient`:
 
 .. code-block:: python
 
-    # Initialize without the credentials or the client ID
-    client = QuadrigaClient(default_book='btc_usd')
+    # Initialize the client without the credentials
+    client = QuadrigaClient()
 
-    # Public API calls are allowed
-    client.get_summary()
-    client.get_public_orders()
-    client.get_public_trades()
+    # Public API calls still go through
+    client.book('btc_cad').get_public_orders()
+    client.book('btc_cad').get_public_trades()
 
-    # Private (user-specific) API calls should fail:
-    client.get_balance()
-    client.get_orders()
-    client.get_trades()
+    # Private (user-specific) API calls fail
+    client.book('btc_cad').get_user_orders()
+    client.book('btc_cad').get_user_trades()

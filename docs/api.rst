@@ -1,8 +1,14 @@
-.. _API:
+API Specification
+-----------------
 
-Client API
-==========
+QuadrigaClient
+==============
 
-.. autoclass:: quadriga.QuadrigaClient
+.. autoclass:: quadriga.client.QuadrigaClient
     :members:
 
+OrderBook
+=========
+
+.. autoclass:: quadriga.book.OrderBook
+    :members:
