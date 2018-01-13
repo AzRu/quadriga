@@ -119,17 +119,20 @@ Here are some usage examples:
     book.sell_market_order(10)          # Sell 10 BTC at market price
     book.sell_limit_order(5, 10)        # Sell 5 BTC at limit price of $10 CAD
 
-Check out the full `API documentation`_ for more details!
+Check out the `documentation`_ for more details!
+
+.. _documentation:
+    http://quadriga.readthedocs.io/en/latest/index.html
+
 
 Contributing
 ============
 
 Please have a look at this page_ before submitting a pull request. Thanks!
 
-.. _API documentation:
-    http://quadriga.readthedocs.io/en/master/index.html
 .. _page:
-    http://quadriga.readthedocs.io/en/master/contributing.html
+    http://quadriga.readthedocs.io/en/latest/contributing.html
+
 
 Donation
 ========
