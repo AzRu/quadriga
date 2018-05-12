@@ -2,14 +2,22 @@ from __future__ import absolute_import, unicode_literals, division
 
 
 class OrderBook(object):
-    """Represents an order book on QuadrigaCX.
+    """API wrapper for an order book on QuadrigaCX.
 
-    .. note::
-        This class is not meant to be instantiated directly. Use
-        :func:`quadriga.client.QuadrigaClient.book` instead.
+    This class is not meant to be imported or instantiated directly. Use method
+    :func:`quadriga.client.QuadrigaClient.book` instead.
     """
 
     def __init__(self, name, rest_client, logger):
+        """Initialize the order book.
+
+        :param name: Order book name.
+        :type name: str | unicode
+        :param rest_client: Rest client.
+        :type rest_client: quadriga.rest.RestClient
+        :param logger: Logger to record debug messages with.
+        :type logger: logging.Logger
+        """
         self.name = name
         self.major, self.minor = name.split('_')
         self._rest_client = rest_client
@@ -19,9 +27,9 @@ class OrderBook(object):
         return '<OrderBook \'{}\'>'.format(self.name)
 
     def _log(self, message):
-        """Log a debug message.
+        """Log a debug message prefixed with order book name.
 
-        :param message: The message to log.
+        :param message: Debug message.
         :type message: str | unicode
         """
         self._logger.debug("{}: {}".format(self.name, message))
@@ -29,7 +37,7 @@ class OrderBook(object):
     def get_ticker(self):
         """Return the latest ticker information.
 
-        :return: The latest ticker information.
+        :return: Latest ticker information.
         :rtype: dict
         """
         self._log('get ticker')
@@ -39,7 +47,7 @@ class OrderBook(object):
         )
 
     def get_public_orders(self, group=False):
-        """Return public orders currently open.
+        """Return public orders that are currently open.
 
         :param group: If set to True (default: False), orders with the same
             price are grouped.
@@ -54,11 +62,11 @@ class OrderBook(object):
         )
 
     def get_public_trades(self, time_frame='hour'):
-        """Return public trades (transactions) completed recently.
+        """Return public trades that were completed recently.
 
-        :param time_frame: The time frame. Allowed values are "minute" for
-            trades in the last minute, or "hour" for trades in the last hour
-            (default: "hour").
+        :param time_frame: Time frame. Allowed values are "minute" for trades
+            in the last minute, or "hour" for trades in the last hour (default:
+            "hour").
         :type time_frame: str | unicode
         :return: Public trades completed recently.
         :rtype: [dict]
@@ -70,9 +78,9 @@ class OrderBook(object):
         )
 
     def get_user_orders(self):
-        """Return user's orders currently open.
+        """Return user's orders that are currently open.
 
-        :return: The list of user's open orders.
+        :return: User's orders currently open.
         :rtype: [dict]
         """
         self._log('get user orders')
@@ -82,18 +90,18 @@ class OrderBook(object):
         )
 
     def get_user_trades(self, limit=0, offset=0, sort='desc'):
-        """Return the user's trade (transaction) history.
+        """Return user's trade history.
 
-        :param limit: The maximum number of trades to return. If set to 0 or
-            lower, all trades are returned (default: 0).
+        :param limit: Maximum number of trades to return. If set to 0 or lower,
+            all trades are returned (default: 0).
         :type limit: int
-        :param offset: The number of trades to skip.
+        :param offset: Number of trades to skip.
         :type offset: int
-        :param sort: The method used to sort the results by date and time.
-            Allowed values are "desc" for descending order and "asc" for
-            ascending order (default: "desc").
+        :param sort: Method used to sort the results by date and time. Allowed
+            values are "desc" for descending order, and "asc" for ascending
+            order (default: "desc").
         :type sort: str | unicode
-        :return: The user's trade history.
+        :return: User's trade history.
         :rtype: [dict]
         """
         self._log('get user trades')
@@ -112,29 +120,26 @@ class OrderBook(object):
     def buy_market_order(self, amount):
         """Place a buy order at market price.
 
-        :param amount: The amount of major currency to buy at market price.
+        :param amount: Amount of major currency to buy at market price.
         :type amount: int | float | str | unicode | decimal.Decimal
-        :return: The order details.
+        :return: Order details.
         :rtype: dict
         """
         amount = str(amount)
         self._log("buy {} {} at market price".format(amount, self.major))
         return self._rest_client.post(
             endpoint='/buy',
-            payload={
-                'book': self.name,
-                'amount': amount
-            }
+            payload={'book': self.name, 'amount': amount}
         )
 
     def buy_limit_order(self, amount, price):
         """Place a buy order at the given limit price.
 
-        :param amount: The amount of major currency to buy at the limit price.
+        :param amount: Amount of major currency to buy at limit price.
         :type amount: int | float | str | unicode | decimal.Decimal
-        :param price: The limit price.
+        :param price: Limit price.
         :type price: int | float | str | unicode | decimal.Decimal
-        :return: The order details.
+        :return: Order details.
         :rtype: dict
         """
         amount = str(amount)
@@ -144,39 +149,32 @@ class OrderBook(object):
         ))
         return self._rest_client.post(
             endpoint='/buy',
-            payload={
-                'book': self.name,
-                'amount': amount,
-                'price': price
-            }
+            payload={'book': self.name, 'amount': amount, 'price': price}
         )
 
     def sell_market_order(self, amount):
         """Place a sell order at market price.
 
-        :param amount: The amount of major currency to sell at market price.
+        :param amount: Amount of major currency to sell at market price.
         :type amount: int | float | str | unicode | decimal.Decimal
-        :return: The order details.
+        :return: Order details.
         :rtype: dict
         """
         amount = str(amount)
         self._log("sell {} {} at market price".format(amount, self.major))
         return self._rest_client.post(
             endpoint='/sell',
-            payload={
-                'book': self.name,
-                'amount': amount
-            }
+            payload={'book': self.name, 'amount': amount}
         )
 
     def sell_limit_order(self, amount, price):
         """Place a sell order at the given limit price.
 
-        :param amount: The amount of major currency to sell at the limit price.
+        :param amount: Amount of major currency to sell at limit price.
         :type amount: int | float | str | unicode | decimal.Decimal
-        :param price: The limit price.
+        :param price: Limit price.
         :type price: int | float | str | unicode | decimal.Decimal
-        :return: The order details.
+        :return: Order details.
         :rtype: dict
         """
         amount = str(amount)
@@ -186,9 +184,5 @@ class OrderBook(object):
         ))
         return self._rest_client.post(
             endpoint='/sell',
-            payload={
-                'book': self.name,
-                'amount': amount,
-                'price': price
-            }
+            payload={'book': self.name, 'amount': amount, 'price': price}
         )

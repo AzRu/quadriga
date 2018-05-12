@@ -8,19 +8,20 @@ from quadriga.exceptions import RequestError
 
 
 class RestClient(object):
-    """REST client which handles HMAC SHA256 authentication.
+    """REST client using HMAC SHA256 authentication.
 
-    :param url: The QuadrigaCX URL.
+    :param url: QuadrigaCX URL.
     :type url: str | unicode
-    :param api_key: The QuadrigaCX API key.
+    :param api_key: QuadrigaCX API key.
     :type api_key: str | unicode
-    :param api_secret: The QuadrigaCX API secret.
+    :param api_secret: QuadrigaCX API secret.
     :type api_secret: str | unicode
-    :param client_id: The QuadrigaCX client ID (the number used for login).
-    :type client_id: int | str | unicode
-    :param timeout: The number of seconds to wait for QuadrigaCX to respond.
+    :param client_id: QuadrigaCX client ID (number used for user login).
+    :type client_id: str | unicode | int
+    :param timeout: Number of seconds to wait for QuadrigaCX to respond to an
+        API request.
     :type timeout: int | float
-    :param session: The requests session object.
+    :param session: User-defined requests.Session object.
     :type session: requests.Session
     """
 
@@ -34,39 +35,38 @@ class RestClient(object):
         self._timeout = timeout
         self._session = session
 
-    def _handle_response(self, response):
+    def _handle_response(self, resp):
         """Handle the response from QuadrigaCX.
 
-        :param response: The response from QuadrigaCX.
-        :type response: requests.models.Response
-        :return: The JSON response body.
+        :param resp: Response from QuadrigaCX.
+        :type resp: requests.models.Response
+        :return: Response body.
         :rtype: dict
-        :raise QuadrigaRequestError: If HTTP OK was not returned.
+        :raise quadriga.exceptions.RequestError: If HTTP OK was not returned.
         """
-        http_code = response.status_code
+        http_code = resp.status_code
         if http_code not in self.http_success_status_codes:
             raise RequestError(
-                response=response,
-                message='[HTTP {}] {}'.format(
-                    http_code, response.reason
-                )
+                response=resp,
+                message='[HTTP {}] {}'.format(http_code, resp.reason)
             )
         try:
-            body = response.json()
+            body = resp.json()
         except ValueError:
             raise RequestError(
-                response=response,
+                response=resp,
                 message='[HTTP {}] response body: {}'.format(
-                    http_code, response.text
+                    http_code,
+                    resp.text
                 )
             )
         else:
             if 'error' in body:
                 error_code = body['error'].get('code', '?')
                 raise RequestError(
-                    response=response,
+                    response=resp,
                     message='[HTTP {}][ERR {}] {}'.format(
-                        response.status_code,
+                        resp.status_code,
                         error_code,
                         body['error'].get('message', 'no error message')
                     ),
@@ -77,13 +77,13 @@ class RestClient(object):
     def get(self, endpoint, params=None):
         """Send an HTTP GET request to QuadrigaCX.
 
-        :param endpoint: The API endpoint.
+        :param endpoint: API endpoint.
         :type endpoint: str | unicode
-        :param params: The request parameters.
+        :param params: URL parameters.
         :type params: dict
-        :return: The JSON response body from QuadrigaCX.
+        :return: Response body from QuadrigaCX.
         :rtype: dict
-        :raise QuadrigaRequestError: If HTTP OK was not returned.
+        :raise quadriga.exceptions.RequestError: If HTTP OK was not returned.
         """
         response = self._session.get(
             url=self._url + endpoint,
@@ -95,13 +95,13 @@ class RestClient(object):
     def post(self, endpoint, payload=None):
         """Send an HTTP POST request to QuadrigaCX.
 
-        :param endpoint: The API endpoint.
+        :param endpoint: API endpoint.
         :type endpoint: str | unicode
-        :param payload: The JSON request payload.
+        :param payload: Request payload.
         :type payload: dict
-        :return: The JSON response body from QuadrigaCX.
+        :return: Response body from QuadrigaCX.
         :rtype: dict
-        :raise QuadrigaRequestError: If HTTP OK was not returned.
+        :raise quadriga.exceptions.RequestError: If HTTP OK was not returned.
         """
         nonce = int(time.time() * 10000)
         hmac_msg = str(nonce) + self._client_id + self._api_key

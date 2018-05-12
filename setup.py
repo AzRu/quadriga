@@ -1,11 +1,17 @@
 from setuptools import setup, find_packages
 
-from quadriga import version
+version = {}
+with open("./quadriga/version.py") as fp:
+    exec(fp.read(), version)
+
+with open('./README.rst') as fp:
+    description = fp.read()
 
 setup(
     name='quadriga',
-    description='Unofficial Python Client for QuadrigaCX API',
-    version=version.__version__,
+    description='Python Client for QuadrigaCX',
+    long_description=description,
+    version=version['__version__'],
     author='Joohwan Oh',
     author_email='joohwan.oh@outlook.com',
     url='https://github.com/joowani/quadriga',

@@ -29,9 +29,8 @@ Python Client for QuadrigaCX
 Introduction
 ============
 
-**Quadriga** is an unofficial Python client for Canadian cryptocurrency
-exchange platform QuadrigaCX_. It wraps the exchange's `REST API v2`_ using the
-`requests`_ library.
+**Quadriga** is a Python client for Canadian cryptocurrency exchange platform
+QuadrigaCX_. It wraps the exchange's `REST API v2`_ using `requests`_ library.
 
 .. _QuadrigaCX: https://www.quadrigacx.com
 .. _REST API v2: https://www.quadrigacx.com/api_info
@@ -41,7 +40,7 @@ exchange platform QuadrigaCX_. It wraps the exchange's `REST API v2`_ using the
 Announcements
 =============
 
-* **Quadriga** has been completely overhauled in version `2.0.0`_!
+* **Quadriga** has been completely overhauled in version `2.0.0`_.
 * Please see the releases_ page for details on the latest updates.
 
 .. _2.0.0: https://github.com/joowani/quadriga/releases/tag/2.0.0
@@ -51,11 +50,8 @@ Announcements
 Requirements
 ============
 
-- Python 2.7, 3.4, 3.5 or 3.6
-- Pip_ installer
-- QuadrigaCX API secret, API key and client ID
-
-.. _Pip: https://pip.pypa.io/
+- Python 2.7, 3.4, 3.5 or 3.6.
+- QuadrigaCX API secret, API key and client ID (the number used for your login).
 
 Installation
 ============
@@ -111,18 +107,17 @@ Here are some usage examples:
     book = client.book('btc_cad')
     book.get_ticker()                   # Get the latest ticker information
     book.get_user_orders()              # Get user's open orders
-    book.get_user_trades()              # Get user's transactions
+    book.get_user_trades()              # Get user's trade history
     book.get_public_orders()            # Get public open orders
-    book.get_public_trades()            # Get recent public transactions
+    book.get_public_trades()            # Get recent public trade history
     book.buy_market_order(10)           # Buy 10 BTC at market price
     book.buy_limit_order(5, 10)         # Buy 5 BTC at limit price of $10 CAD
     book.sell_market_order(10)          # Sell 10 BTC at market price
     book.sell_limit_order(5, 10)        # Sell 5 BTC at limit price of $10 CAD
 
-Check out the `documentation`_ for more details!
+Check out the `documentation`_ for more details.
 
-.. _documentation:
-    http://quadriga.readthedocs.io/en/latest/index.html
+.. _documentation: http://quadriga.readthedocs.io/en/latest/index.html
 
 
 Contributing
@@ -130,14 +125,13 @@ Contributing
 
 Please have a look at this page_ before submitting a pull request. Thanks!
 
-.. _page:
-    http://quadriga.readthedocs.io/en/latest/contributing.html
+.. _page: http://quadriga.readthedocs.io/en/latest/contributing.html
 
 
 Donation
 ========
 
-If you found this library useful, feel free to donate!
+If you found this library useful, feel free to donate.
 
 * **BTC**: 3QG2wSQnXNbGv1y88oHgLXtTabJwxfF8mU
 * **ETH**: 0x1f90a2a456420B38Bdb39086C17e61BF5C377dab

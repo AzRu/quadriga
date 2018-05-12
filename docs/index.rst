@@ -1,8 +1,8 @@
 Quadriga
 --------
 
-Welcome to the documentation for **quadriga**, an unofficial Python client for
-Canadian cryptocurrency exchange platform QuadrigaCX_. It wraps the exchange's
+Welcome to the documentation for **quadriga**, Python client for Canadian
+cryptocurrency exchange platform QuadrigaCX_. It wraps the exchange's
 `REST API v2`_ using the `requests`_ library.
 
 .. _QuadrigaCX: https://www.quadrigacx.com
@@ -13,10 +13,7 @@ Requirements
 ============
 
 - Python 2.7, 3.4, 3.5 or 3.6
-- Pip_ installer
-- QuadrigaCX API secret, API key and client ID
-
-.. _Pip: https://pip.pypa.io
+- QuadrigaCX API secret, API key and client ID (the number used for your login)
 
 Installation
 ============
@@ -46,10 +43,11 @@ Contents
     :maxdepth: 1
 
     overview
-    api
+    specs
     errors
-    logging
     public
+    logging
+    session
     contributing
 
 

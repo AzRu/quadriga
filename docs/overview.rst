@@ -1,8 +1,7 @@
 Getting Started
 ---------------
 
-Here is an example showing how the **quadriga** client can be initialized and
-used:
+Here is an example showing how a **quadriga** client can be initialized and used:
 
 .. code-block:: python
 
@@ -40,5 +39,4 @@ used:
     book.sell_market_order(10)          # Sell 10 BTC at market price
     book.sell_limit_order(5, 10)        # Sell 5 BTC at limit price of $10 CAD
 
-
-Refer to the :ref:`API Specification` for more details.
+See :doc:`specs` for more details.

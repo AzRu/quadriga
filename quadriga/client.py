@@ -16,37 +16,36 @@ from quadriga.version import __version__
 class QuadrigaClient(object):
     """Python client for QuadrigaCX's `REST API v2`_.
 
-    :param api_key: The QuadrigaCX API key.
+    :param api_key: QuadrigaCX API key.
     :type api_key: str | unicode
-    :param api_secret: The QuadrigaCX API secret.
+    :param api_secret: QuadrigaCX API secret.
     :type api_secret: str | unicode
-    :param client_id: The QuadrigaCX client ID (the number used for login).
-    :type client_id: int | str | unicode
-    :param timeout: The number of seconds to wait for QuadrigaCX to respond.
+    :param client_id: QuadrigaCX client ID (number used for user login).
+    :type client_id: str | unicode | int
+    :param timeout: Number of seconds to wait for QuadrigaCX to respond to an
+        API request.
     :type timeout: int | float
-    :param session: Custom requests.Session object to send HTTP requests with.
-        If not set, ``requests.Session()`` is used by default.
+    :param session: User-defined requests.Session object. If not set,
+        ``requests.Session()`` is used by default.
     :type session: requests.Session
     :param logger: Logger to record debug messages with. If not set,
         ``logging.getLogger('quadriga')`` is used by default.
     :type logger: logging.Logger
 
-    :cvar version: The client version number.
+    :cvar version: Client version.
     :vartype version: str | unicode
-    :cvar url: The QuadrigaCX API endpoint.
+    :cvar url: QuadrigaCX API base URL.
     :vartype url: str | unicode
-    :cvar order_books: The order books supported by the client.
+    :cvar order_books: Order books supported.
     :vartype order_books: [str | unicode]
-    :cvar major_currencies: The major currencies supported by the client.
+    :cvar major_currencies: Major currencies supported.
     :vartype major_currencies: dict
 
     .. note::
-        Parameters **api_key**, **api_secret** and **client_id** are optional
-        for public API. See the documentation_ for details.
+        Parameters **api_key**, **api_secret** and **client_id** are optional.
+        See :doc:`public` for details.
 
     .. _REST API v2: https://www.quadrigacx.com/api_info
-    .. _documentation: https://quadriga.readthedocs.io/en/latest/public.html
-
     """
 
     version = __version__
@@ -97,7 +96,7 @@ class QuadrigaClient(object):
     def _log(self, message):
         """Log a debug message.
 
-        :param message: The message to log.
+        :param message: Debug message.
         :type message: str | unicode
         """
         self._logger.debug(message)
@@ -105,7 +104,7 @@ class QuadrigaClient(object):
     def _validate_order_book(self, book):
         """Check if the given order book is valid.
 
-        :param book: The name of the order book.
+        :param book: Order book name.
         :type book: str | unicode
         :raise InvalidOrderBookError: If an invalid order book is given.
         """
@@ -118,7 +117,7 @@ class QuadrigaClient(object):
     def _validate_currency(self, currency):
         """Check if the given order book is valid.
 
-        :param currency: The 3 letter code of the major currency in lowercase.
+        :param currency: Major currency name in lowercase.
         :type currency: str | unicode
         :raise InvalidCurrencyError: If an invalid major currency is given.
         """
@@ -129,33 +128,32 @@ class QuadrigaClient(object):
             )
 
     def book(self, name):
-        """Return an instance of :class:`quadriga.book.OrderBook`, an order
-        book API wrapper object.
+        """Return an API wrapper for the given order book.
 
-        :param name: The name of the order book.
-        :param name: str | unicode
-        :return: The order book wrapper object.
+        :param name: Order book name (e.g. "btc_cad").
+        :type name: str | unicode
+        :return: Order book API wrapper.
         :rtype: quadriga.book.OrderBook
         :raise InvalidOrderBookError: If an invalid order book is given.
 
         **Example**:
 
-        .. code-block:: python
+        .. doctest::
 
             >>> from quadriga import QuadrigaClient
             >>>
             >>> client = QuadrigaClient()
             >>>
-            >>> client.book('eth_cad').get_ticker()
-            >>> client.book('btc_cad').get_ticker()
+            >>> eth = client.book('eth_cad').get_ticker()  # doctest:+ELLIPSIS
+            >>> btc = client.book('btc_cad').get_ticker()  # doctest:+ELLIPSIS
         """
         self._validate_order_book(name)
         return OrderBook(name, self._rest_client, self._logger)
 
     def get_balance(self):
-        """Return the user's account balance.
+        """Return user's account balance.
 
-        :return: The user's account balance.
+        :return: User's account balance.
         :rtype: dict
         """
         self._log("get account balance")
@@ -164,9 +162,9 @@ class QuadrigaClient(object):
     def lookup_order(self, order_id):
         """Look up one or more orders by ID (64 hexadecmial characters).
 
-        :param order_id: The order ID, or a list of order IDs.
-        :type order_id: str | unicode | list
-        :return: The order details.
+        :param order_id: Order ID or list of order IDs.
+        :type order_id: str | unicode | [str | unicode]
+        :return: Order details.
         :rtype: [dict]
         """
         self._log('look up order(s) {}'.format(order_id))
@@ -178,9 +176,9 @@ class QuadrigaClient(object):
     def cancel_order(self, order_id):
         """Cancel an open order by ID (64 hexadecmial characters).
 
-        :param order_id: The order ID.
+        :param order_id: Order ID.
         :type order_id: str | unicode
-        :return: True if the order has been cancelled successfully.
+        :return: True if the order was cancelled successfully.
         :rtype: bool
         """
         self._log('cancel order {}'.format(order_id))
@@ -193,10 +191,9 @@ class QuadrigaClient(object):
     def get_deposit_address(self, currency):
         """Return the deposit address for the given major currency.
 
-        :param currency: The 3 letter code of the major currency in lowercase
-            (e.g. "btc", "eth", "ltc").
+        :param currency: Major currency name in lowercase (e.g. "btc", "eth").
         :type currency: str | unicode
-        :return: The deposit address.
+        :return: Deposit address.
         :rtype: str | unicode
         """
         self._validate_currency(currency)
@@ -209,18 +206,17 @@ class QuadrigaClient(object):
     def withdraw(self, currency, amount, address):
         """Withdraw a major currency from QuadrigaCX to the given wallet.
 
-        :param currency: The 3 letter code of the major currency in lowercase
-            (e.g. "btc", "eth", "ltc").
+        :param currency: Major currency name in lowercase (e.g. "btc", "eth").
         :type currency: str | unicode
-        :param amount: The withdrawal amount.
+        :param amount: Withdrawal amount.
         :type amount: int | float | str | unicode | decimal.Decimal
-        :param address: The wallet address.
+        :param address: Wallet address.
         :type address: str | unicode
 
         .. warning::
-            Specifying an incorrect major currency and/or wallet address could
-            result in permanent loss of your coins. Please be careful when you
-            use this method!
+            Specifying incorrect major currency or wallet address could result
+            in permanent loss of your coins. Please be careful when using this
+            method!
         """
         self._validate_currency(currency)
         self._log('withdraw {} {} to {}'.format(amount, currency, address))
